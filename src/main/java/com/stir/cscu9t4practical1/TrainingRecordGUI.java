@@ -86,6 +86,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         myAthletes.addEntry(e2);
         myAthletes.addEntry(e3);
 
+        //fillDisplay(e1);
+
     } // constructor
 
     // listen for and respond to GUI events 
@@ -101,40 +103,91 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             message = findAllByDate();
         }
         outputArea.setText(message);
-        blankDisplay();
     } // actionPerformed
 
     public String addEntry(String what) {
-        String message = "Record added\n";
-        System.out.println("Adding "+what+" entry to the records");
-        String n = name.getText();
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        float km = java.lang.Float.parseFloat(dist.getText());
-        int h = Integer.parseInt(hours.getText());
-        int mm = Integer.parseInt(mins.getText());
-        int s = Integer.parseInt(secs.getText());
-        Entry e = new Entry(n, d, m, y, h, mm, s, km);
-        myAthletes.addEntry(e);
-        return message;
+        String validationMessage = validateNewEntry();
+
+        if (validationMessage.equals("")) {
+            String message = "Record added\n";
+            System.out.println("Adding " + what + " entry to the records");
+            String n = name.getText();
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            float km = java.lang.Float.parseFloat(dist.getText());
+            int h = Integer.parseInt(hours.getText());
+            int mm = Integer.parseInt(mins.getText());
+            int s = Integer.parseInt(secs.getText());
+            Entry e = new Entry(n, d, m, y, h, mm, s, km);
+            myAthletes.addEntry(e);
+            blankDisplay();
+            return message;
+        } else return validationMessage;
     }
-    
+
+
     public String lookupEntry() {
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        outputArea.setText("looking up record ...");
-        String message = myAthletes.lookupEntry(d, m, y);
-        return message;
+        String validationMessage = validateLookup();
+
+        if (validationMessage.equals("")) {
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            outputArea.setText("looking up record ...");
+            String message = myAthletes.lookupEntry(d, m, y);
+            blankDisplay();
+            return message;
+        } else return validationMessage;
     }
 
     public String findAllByDate() {
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        outputArea.setText("looking up records ...");
-        String message = myAthletes.findAllByDate(d, m, y);
+        String validationMessage = validateLookup();
+
+        if (validationMessage.equals("")) {
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            outputArea.setText("looking up records ...");
+            String message = myAthletes.findAllByDate(d, m, y);
+            blankDisplay();
+            return message;
+        } else return validationMessage;
+    }
+
+    public String validateNewEntry() {
+        String message = "";
+        if (name.getText().trim().equals("")) {
+            message += "Name cannot be empty!\n";
+        }
+        try {
+            Integer.parseInt(day.getText());
+            Integer.parseInt(month.getText());
+            Integer.parseInt(year.getText());
+            Integer.parseInt(hours.getText());
+            Integer.parseInt(mins.getText());
+            Integer.parseInt(secs.getText());
+        } catch (NumberFormatException ex) {
+            message += "Day, month, year, hours, mins and secs must be integers!\n";
+        }
+        try {
+            Float.parseFloat(dist.getText());
+        } catch (NumberFormatException ex) {
+            message += "Distance must be a number!\n";
+        }
+
+        return message;
+    }
+
+    public String validateLookup() {
+        String message = "";
+        try {
+            Integer.parseInt(day.getText());
+            Integer.parseInt(month.getText());
+            Integer.parseInt(year.getText());
+        } catch (NumberFormatException ex) {
+            message += "Day, month and year must be integers!\n";
+        }
         return message;
     }
 
@@ -149,6 +202,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         dist.setText("");
 
     }// blankDisplay
+
     // Fills the input fields on the display for testing purposes only
     public void fillDisplay(Entry ent) {
         name.setText(ent.getName());

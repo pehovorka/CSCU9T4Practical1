@@ -40,7 +40,7 @@ public class TrainingRecord {
                 result += current.getEntry();
         }
 
-        if (result == "") {
+        if (result.equals("")) {
             result = "No entries found";
         }
         return result;
