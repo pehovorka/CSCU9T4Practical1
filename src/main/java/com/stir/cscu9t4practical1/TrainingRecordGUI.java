@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import java.lang.Number;
+import java.util.List;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
 
@@ -106,12 +107,12 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     } // actionPerformed
 
     public String addEntry(String what) {
-        String validationMessage = validateNewEntry();
+        List errors = validateNewEntry();
 
-        if (validationMessage.equals("")) {
+        if (errors.size() == 0) {
             String message = "Record added\n";
             System.out.println("Adding " + what + " entry to the records");
-            String n = name.getText();
+            String n = name.getText().trim();
             int m = Integer.parseInt(month.getText());
             int d = Integer.parseInt(day.getText());
             int y = Integer.parseInt(year.getText());
@@ -123,14 +124,14 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             myAthletes.addEntry(e);
             blankDisplay();
             return message;
-        } else return validationMessage;
+        } else return convertListToString(errors);
     }
 
 
     public String lookupEntry() {
-        String validationMessage = validateLookup();
+        List errors = validateLookup();
 
-        if (validationMessage.equals("")) {
+        if (errors.size() == 0) {
             int m = Integer.parseInt(month.getText());
             int d = Integer.parseInt(day.getText());
             int y = Integer.parseInt(year.getText());
@@ -138,13 +139,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             String message = myAthletes.lookupEntry(d, m, y);
             blankDisplay();
             return message;
-        } else return validationMessage;
+        } else return convertListToString(errors);
     }
 
     public String findAllByDate() {
-        String validationMessage = validateLookup();
+        List errors = validateLookup();
 
-        if (validationMessage.equals("")) {
+        if (errors.size() == 0) {
             int m = Integer.parseInt(month.getText());
             int d = Integer.parseInt(day.getText());
             int y = Integer.parseInt(year.getText());
@@ -152,13 +153,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             String message = myAthletes.findAllByDate(d, m, y);
             blankDisplay();
             return message;
-        } else return validationMessage;
+        } else return convertListToString(errors);
     }
 
-    public String validateNewEntry() {
-        String message = "";
+    public List validateNewEntry() {
+        List<String> errors = new ArrayList<String>();
         if (name.getText().trim().equals("")) {
-            message += "Name cannot be empty!\n";
+            errors.add("Name cannot be empty!");
         }
         try {
             Integer.parseInt(day.getText());
@@ -168,25 +169,37 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             Integer.parseInt(mins.getText());
             Integer.parseInt(secs.getText());
         } catch (NumberFormatException ex) {
-            message += "Day, month, year, hours, mins and secs must be integers!\n";
+            errors.add("Day, month, year, hours, mins and secs must be integers!");
         }
         try {
             Float.parseFloat(dist.getText());
         } catch (NumberFormatException ex) {
-            message += "Distance must be a number!\n";
+            errors.add("Distance must be a number!");
         }
 
-        return message;
+        if (errors.size() == 0){
+            // TODO: Prevent adding same entries.
+        }
+        return errors;
     }
 
-    public String validateLookup() {
-        String message = "";
+    public List validateLookup() {
+        List<String> errors = new ArrayList<String>();
         try {
             Integer.parseInt(day.getText());
             Integer.parseInt(month.getText());
             Integer.parseInt(year.getText());
         } catch (NumberFormatException ex) {
-            message += "Day, month and year must be integers!\n";
+            errors.add("Day, month and year must be integers!");
+        }
+        return errors;
+    }
+
+    // Converts List to String. Each list item is on a new line.
+    public String convertListToString(List<String> list) {
+        String message = "";
+        for (int i = 0; i < list.size(); i++) {
+            message += list.get(i) + "\n";
         }
         return message;
     }
