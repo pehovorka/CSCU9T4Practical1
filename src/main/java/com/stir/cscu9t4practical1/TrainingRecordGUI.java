@@ -178,10 +178,18 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         }
 
         if (errors.size() == 0){
-            // TODO: Prevent adding same entries.
+            int d = Integer.parseInt(day.getText());
+            int m = Integer.parseInt(month.getText());
+            int y = Integer.parseInt(year.getText());
+            String n = name.getText().trim();
+            if (myAthletes.entryAlreadyExists(d,m,y,n)){
+                errors.add("This entry already exists! Change name or date.");
+            };
         }
         return errors;
     }
+
+
 
     public List validateLookup() {
         List<String> errors = new ArrayList<String>();

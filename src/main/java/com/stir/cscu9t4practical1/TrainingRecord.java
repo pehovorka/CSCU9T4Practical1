@@ -56,4 +56,17 @@ public class TrainingRecord {
         tr.clear();
     }
 
+    // Check if entry with the same name exists on specified day
+    public boolean entryAlreadyExists(int d, int m, int y, String n){
+        ListIterator<Entry> iter = tr.listIterator();
+
+        while (iter.hasNext()) {
+            Entry current = iter.next();
+            if (current.getDay() == d && current.getMonth() == m && current.getYear() == y && current.getName().equals(n)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 } // TrainingRecord
