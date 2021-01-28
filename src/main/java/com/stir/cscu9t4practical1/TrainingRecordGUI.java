@@ -79,7 +79,13 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
         // To save typing in new entries while testing, uncomment
         // the following lines (or add your own test cases)
-        
+        Entry e1 = new Entry("Test 1", 1, 1, 1990, 1, 2, 3, 8);
+        Entry e2 = new Entry("Test 2", 1, 1, 1990, 2, 3, 4, 9);
+        Entry e3 = new Entry("Test 3", 2, 1, 1990, 0, 0, 4, 2);
+        myAthletes.addEntry(e1);
+        myAthletes.addEntry(e2);
+        myAthletes.addEntry(e3);
+
     } // constructor
 
     // listen for and respond to GUI events 
@@ -92,7 +98,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             message = lookupEntry();
         }
         if (event.getSource() == findAllByDate) {
-            message = "Not implemented yet :(";
+            message = findAllByDate();
         }
         outputArea.setText(message);
         blankDisplay();
@@ -120,6 +126,15 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         int y = Integer.parseInt(year.getText());
         outputArea.setText("looking up record ...");
         String message = myAthletes.lookupEntry(d, m, y);
+        return message;
+    }
+
+    public String findAllByDate() {
+        int m = Integer.parseInt(month.getText());
+        int d = Integer.parseInt(day.getText());
+        int y = Integer.parseInt(year.getText());
+        outputArea.setText("looking up records ...");
+        String message = myAthletes.findAllByDate(d, m, y);
         return message;
     }
 
