@@ -8,8 +8,11 @@ public class SprintEntry extends Entry {
         this.recovery = recovery;
     } // Constructor
 
-    public String getEntry () {
-        return buildEntryString("ran");
+    public String getEntry() {
+        String result = getName() + " sprinted " + getRepetitions() + "x" + (int) getDistance() + "m in "
+                + getHour() + ":" + getMin() + ":" + getSec() + " with " + getRecovery() + " minutes recovery on "
+                + getDay() + "/" + getMonth() + "/" + getYear() + "\n";
+        return result;
     } //getEntry
 
     public int getRepetitions() {

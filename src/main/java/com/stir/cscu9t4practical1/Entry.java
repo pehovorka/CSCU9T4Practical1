@@ -50,7 +50,9 @@ public class Entry {
     } //getYear
 
     public String getEntry() {
-        String result = buildEntryString("ran");
+        String result = getName() + " ran " + getDistance() + " km in "
+                + getHour() + ":" + getMin() + ":" + getSec() + " on "
+                + getDay() + "/" + getMonth() + "/" + getYear() + "\n";
         return result;
     } //getEntry
 
@@ -73,12 +75,4 @@ public class Entry {
     public String getWhere () {
         return null;
     }
-
-    public String buildEntryString(String activity) {
-        String result = getName() + " " + activity + " " + getDistance() + " km in "
-                + getHour() + ":" + getMin() + ":" + getSec() + " on "
-                + getDay() + "/" + getMonth() + "/" + getYear() + "\n";
-        return result;
-    }
-
 } // Entry

@@ -10,7 +10,10 @@ public class CycleEntry extends Entry {
     } // Constructor
 
     public String getEntry() {
-        return buildEntryString("cycled");
+        String result = getName() + " cycled " + getDistance() + " km in "
+                + getHour() + ":" + getMin() + ":" + getSec() + " on "
+                + getDay() + "/" + getMonth() + "/" + getYear() + " on " + getTerrain() + " at " + getTempo() + " tempo\n";
+        return result;
     } //getEntry
 
     public String getTerrain() {
