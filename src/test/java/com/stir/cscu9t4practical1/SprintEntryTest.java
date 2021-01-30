@@ -162,10 +162,26 @@ public class SprintEntryTest {
     @Test
     public void testGetEntry() {
         System.out.println("getEntry");
-        Entry instance = new SprintEntry("Alice", 1, 2, 2003, 0, 16, 7, 0.3F, 4, 2);
-        String expResult = "Alice sprinted 4x300m in 0:16:7 with 2 minutes recovery on 1/2/2003\n";
-        String result = instance.getEntry();
-        assertEquals(expResult, result);
+        Entry instance1 = new SprintEntry("Alice", 1, 2, 2003, 0, 16, 7, 0.3F, 4, 2);
+        String expResult1 = "Alice sprinted 4x300m in 0:16:7 with 2 minutes recovery on 1/2/2003\n";
+        String result1 = instance1.getEntry();
+
+        Entry instance2 = new SprintEntry("Alice", 1, 2, 2003, 0, 16, 7, 3F, 1, 2);
+        String expResult2 = "Alice ran 3km in 0:16:7 with 2 minutes recovery on 1/2/2003\n";
+        String result2 = instance2.getEntry();
+
+        Entry instance3 = new SprintEntry("Alice", 1, 2, 2003, 0, 16, 7, 0.3F, 1, 2);
+        String expResult3 = "Alice ran 300m in 0:16:7 with 2 minutes recovery on 1/2/2003\n";
+        String result3 = instance3.getEntry();
+
+        Entry instance4 = new SprintEntry("Alice", 1, 2, 2003, 0, 16, 7, 3F, 5, 2);
+        String expResult4 = "Alice sprinted 5x3km in 0:16:7 with 2 minutes recovery on 1/2/2003\n";
+        String result4 = instance4.getEntry();
+
+        assertEquals(expResult1, result1);
+        assertEquals(expResult2, result2);
+        assertEquals(expResult3, result3);
+        assertEquals(expResult4, result4);
     }
     
 }
