@@ -23,8 +23,9 @@ public class TrainingRecord {
         String result = "No entries found";
         while (iter.hasNext()) {
             Entry current = iter.next();
-            if (current.getDay() == d && current.getMonth() == m && current.getYear() == y)
+            if (current.getDay() == d && current.getMonth() == m && current.getYear() == y) {
                 result = current.getEntry();
+            }
         }
         return result;
     } // lookupEntry
@@ -36,8 +37,9 @@ public class TrainingRecord {
 
         while (iter.hasNext()) {
             Entry current = iter.next();
-            if (current.getDay() == d && current.getMonth() == m && current.getYear() == y)
+            if (current.getDay() == d && current.getMonth() == m && current.getYear() == y) {
                 result += current.getEntry();
+            }
         }
 
         if (result.equals("")) {
@@ -53,8 +55,9 @@ public class TrainingRecord {
 
         while (iter.hasNext()) {
             Entry current = iter.next();
-            if (current.getName().toLowerCase().contains(name.trim().toLowerCase()))
+            if (current.getName().toLowerCase().contains(name.trim().toLowerCase())) {
                 result += current.getEntry();
+            }
         }
 
         if (result.equals("")) {
@@ -62,6 +65,25 @@ public class TrainingRecord {
         }
         return result;
     } // findByName
+
+    public String removeEntry(String name, int d, int m, int y) {
+        ListIterator<Entry> iter = tr.listIterator();
+        String result = "";
+
+        while (iter.hasNext()) {
+            Entry current = iter.next();
+            if (current.getDay() == d && current.getMonth() == m && current.getYear() == y && current.getName().equals(name)) {
+                result = "This entry has been removed: " + current.getEntry();
+                iter.remove();
+            }
+        }
+
+        if (result.equals("")) {
+            result = "No such entry!";
+        }
+        return result;
+    } // removeEntry
+
 
     // Count the number of entries
     public int getNumberOfEntries() {
@@ -74,7 +96,7 @@ public class TrainingRecord {
     }
 
     // Check if entry with the same name exists on specified day
-    public boolean entryAlreadyExists(int d, int m, int y, String n){
+    public boolean entryAlreadyExists(int d, int m, int y, String n) {
         ListIterator<Entry> iter = tr.listIterator();
 
         while (iter.hasNext()) {

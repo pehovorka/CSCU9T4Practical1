@@ -12,7 +12,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
     private String tempos[] = {"slow", "moderate", "fast"};
 
-    private JTextField name = new JTextField(30);
+    private JTextField name = new JTextField(20);
     private JTextField day = new JTextField(2);
     private JTextField month = new JTextField(2);
     private JTextField year = new JTextField(4);
@@ -42,8 +42,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JButton lookUpByDate = new JButton("Look Up");
     private JButton findAllByDate = new JButton("Find All By Date");
     private JButton findByName = new JButton("Find By Name");
+    private JButton removeEntry = new JButton("Remove entry");
     private JRadioButton rbInput = new JRadioButton("Input data");
     private JRadioButton rbView = new JRadioButton("View data");
+    private JRadioButton rbRemove = new JRadioButton("Remove data");
 
 
     private String entryTypes[] = {"Cycling", "Swimming", "Running"};
@@ -60,21 +62,29 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     // set up the GUI 
     public TrainingRecordGUI() {
         super("Training Record");
+
+        // Layout
         setLayout(new FlowLayout());
+
+        // Radio buttons
         ButtonGroup bg = new ButtonGroup();
         bg.add(rbInput);
         bg.add(rbView);
+        bg.add(rbRemove);
         add(rbInput);
         rbInput.addActionListener(this);
         add(rbView);
         rbView.addActionListener(this);
+        add(rbRemove);
+        rbRemove.addActionListener(this);
         rbInput.setSelected(true);
+
+        // Labels and text fields
         add(labn);
         add(name);
         name.setEditable(true);
         add(findByName);
         findByName.addActionListener(this);
-        findByName.setVisible(false);
         add(entryTypesSelect);
         entryTypesSelect.addActionListener(this);
         add(labd);
@@ -119,19 +129,25 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         add(place);
         place.setEditable(true);
 
-
+        // Buttons
         add(addR);
         addR.addActionListener(this);
         add(lookUpByDate);
         lookUpByDate.addActionListener(this);
-        lookUpByDate.setVisible(false);
         add(findAllByDate);
         findAllByDate.addActionListener(this);
-        findAllByDate.setVisible(false);
+        add(removeEntry);
+        removeEntry.addActionListener(this);
+
+        // Output area
         add(outputArea);
         outputArea.setEditable(false);
+
+        // JFrame properties
         setSize(720, 300);
         setVisible(true);
+
+
         blankDisplay();
         setElementsVisibility();
 
@@ -164,8 +180,24 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         if (event.getSource() == findByName) {
             message = findByName();
         }
-        // Input data
-        if (event.getSource() == rbInput) {
+        // Set elements visibility on mode change
+        if (event.getSource() == rbInput || event.getSource() == rbView || event.getSource() == rbRemove) {
+            setElementsVisibility();
+        }
+
+        if (event.getSource() == entryTypesSelect) {
+            setElementsVisibility();
+        }
+
+        if (event.getSource() == removeEntry) {
+            message = removeEntry();
+        }
+
+        outputArea.setText(message);
+    } // actionPerformed
+
+    private void setElementsVisibility() {
+        if (rbInput.isSelected()) {
             // Visible
             labn.setVisible(true);
             name.setVisible(true);
@@ -183,43 +215,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             lookUpByDate.setVisible(false);
             findAllByDate.setVisible(false);
             findByName.setVisible(false);
+            removeEntry.setVisible(false);
 
-
-            setElementsVisibility();
-        }
-        // View data
-        if (event.getSource() == rbView) {
-            // Visible
-            labn.setVisible(true);
-            name.setVisible(true);
-            lookUpByDate.setVisible(true);
-            findAllByDate.setVisible(true);
-            findByName.setVisible(true);
-            // Hidden
-            entryTypesSelect.setVisible(false);
-            labh.setVisible(false);
-            hours.setVisible(false);
-            labmm.setVisible(false);
-            mins.setVisible(false);
-            labs.setVisible(false);
-            secs.setVisible(false);
-            labdist.setVisible(false);
-            dist.setVisible(false);
-            addR.setVisible(false);
-
-
-            setElementsVisibility();
-        }
-
-        if (event.getSource() == entryTypesSelect) {
-            setElementsVisibility();
-        }
-
-        outputArea.setText(message);
-    } // actionPerformed
-
-    private void setElementsVisibility() {
-        if (rbInput.isSelected()) {
             switch (entryTypesSelect.getSelectedItem().toString()) {
                 case "Cycling":
                     // Visible
@@ -276,7 +273,27 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
                     labrecovery.setVisible(false);
                     recovery.setVisible(false);
             }
-        } else {
+        } else if (rbView.isSelected()) {
+            // Visible
+            labn.setVisible(true);
+            name.setVisible(true);
+            lookUpByDate.setVisible(true);
+            findAllByDate.setVisible(true);
+            findByName.setVisible(true);
+            // Hidden
+            entryTypesSelect.setVisible(false);
+            labh.setVisible(false);
+            hours.setVisible(false);
+            labmm.setVisible(false);
+            mins.setVisible(false);
+            labs.setVisible(false);
+            secs.setVisible(false);
+            labdist.setVisible(false);
+            dist.setVisible(false);
+            addR.setVisible(false);
+            removeEntry.setVisible(false);
+
+
             labterr.setVisible(false);
             terr.setVisible(false);
             labtempo.setVisible(false);
@@ -287,6 +304,39 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             repetitions.setVisible(false);
             labrecovery.setVisible(false);
             recovery.setVisible(false);
+        } else if (rbRemove.isSelected()) {
+            // Visible
+            labn.setVisible(true);
+            name.setVisible(true);
+            removeEntry.setVisible(true);
+
+
+            // Hidden
+            entryTypesSelect.setVisible(false);
+            labh.setVisible(false);
+            hours.setVisible(false);
+            labmm.setVisible(false);
+            mins.setVisible(false);
+            labs.setVisible(false);
+            secs.setVisible(false);
+            labdist.setVisible(false);
+            dist.setVisible(false);
+            addR.setVisible(false);
+            lookUpByDate.setVisible(false);
+            findAllByDate.setVisible(false);
+            findByName.setVisible(false);
+
+            labterr.setVisible(false);
+            terr.setVisible(false);
+            labtempo.setVisible(false);
+            tempo.setVisible(false);
+            labplace.setVisible(false);
+            place.setVisible(false);
+            labrepetitions.setVisible(false);
+            repetitions.setVisible(false);
+            labrecovery.setVisible(false);
+            recovery.setVisible(false);
+
         }
 
     }
@@ -332,7 +382,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
 
     public String lookupEntry() {
-        List errors = validateLookup("BY_DATE");
+        List errors = validateLookupOrRemoval("BY_DATE");
 
         if (errors.size() == 0) {
             int m = Integer.parseInt(month.getText());
@@ -346,7 +396,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
 
     public String findAllByDate() {
-        List errors = validateLookup("BY_DATE");
+        List errors = validateLookupOrRemoval("BY_DATE");
 
         if (errors.size() == 0) {
             int m = Integer.parseInt(month.getText());
@@ -360,7 +410,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
 
     public String findByName() {
-        List errors = validateLookup("BY_NAME");
+        List errors = validateLookupOrRemoval("BY_NAME");
 
         if (errors.size() == 0) {
             outputArea.setText("looking up records ...");
@@ -370,26 +420,26 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         } else return convertListToString(errors);
     }
 
+    public String removeEntry() {
+        List errors = validateLookupOrRemoval("BY_NAME_AND_DATE");
+
+        if (errors.size() == 0) {
+            outputArea.setText("looking up records ...");
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            String message = myAthletes.removeEntry(name.getText(), m, d, y);
+            blankDisplay();
+            return message;
+        } else return convertListToString(errors);
+    }
+
     public List validateNewEntry(String what) {
         List<String> errors = new ArrayList<String>();
-        if (name.getText().trim().equals("")) {
-            errors.add("Name cannot be empty!");
-        }
-        try {
-            Integer.parseInt(day.getText());
-            Integer.parseInt(month.getText());
-            Integer.parseInt(year.getText());
-            Integer.parseInt(hours.getText());
-            Integer.parseInt(mins.getText());
-            Integer.parseInt(secs.getText());
-        } catch (NumberFormatException ex) {
-            errors.add("Day, month, year, hours, mins and secs must be integers!");
-        }
-        try {
-            Float.parseFloat(dist.getText());
-        } catch (NumberFormatException ex) {
-            errors.add("Distance must be a number!");
-        }
+        validateName(errors);
+        validateDate(errors);
+        validateTime(errors);
+        validateDistance(errors);
 
         // Specific checks depending on entry type
         switch (what) {
@@ -411,7 +461,6 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
         }
 
-
         // Prevent duplicate entries
         if (errors.size() == 0) {
             int d = Integer.parseInt(day.getText());
@@ -427,23 +476,56 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
 
 
-    public List validateLookup(String type) {
+    public List validateLookupOrRemoval(String type) {
         List<String> errors = new ArrayList<String>();
         if (type.equals("BY_DATE")) {
-            try {
-                Integer.parseInt(day.getText());
-                Integer.parseInt(month.getText());
-                Integer.parseInt(year.getText());
-            } catch (NumberFormatException ex) {
-                errors.add("Day, month and year must be integers!");
-            }
-        } else if (type.equals("BY_NAME")){
-            if (name.getText().trim().equals("")){
-                errors.add("Search query cannot be empty!");
-            }
+            validateDate(errors);
+        } else if (type.equals("BY_NAME")) {
+            validateName(errors);
+        } else {
+            validateName(errors);
+            validateDate(errors);
         }
+
         return errors;
     }
+
+    private void validateDate(List errors) {
+        try {
+            Integer.parseInt(day.getText());
+            Integer.parseInt(month.getText());
+            Integer.parseInt(year.getText());
+        } catch (NumberFormatException ex) {
+            errors.add("Day, month and year must be integers!");
+        }
+    }
+
+    private void validateTime(List errors) {
+        try {
+            Integer.parseInt(hours.getText());
+            Integer.parseInt(mins.getText());
+            Integer.parseInt(secs.getText());
+        } catch (NumberFormatException ex) {
+            errors.add("Hours, mins and secs must be integers!");
+        }
+    }
+
+    private void validateName(List errors) {
+        if (name.getText().trim().equals("")) {
+            errors.add("Name cannot be empty!");
+        }
+    }
+
+    private void validateDistance(List errors) {
+        try {
+            Float.parseFloat(dist.getText());
+        } catch (NumberFormatException ex) {
+            errors.add("Distance must be a number!");
+        }
+    }
+
+
+
 
     // Converts List to String. Each list item is on a new line.
     public String convertListToString(List<String> list) {
