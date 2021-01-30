@@ -46,6 +46,23 @@ public class TrainingRecord {
         return result;
     } // findAllByDate
 
+
+    public String findByName(String name) {
+        ListIterator<Entry> iter = tr.listIterator();
+        String result = "";
+
+        while (iter.hasNext()) {
+            Entry current = iter.next();
+            if (current.getName().toLowerCase().contains(name.trim().toLowerCase()))
+                result += current.getEntry();
+        }
+
+        if (result.equals("")) {
+            result = "No entries found";
+        }
+        return result;
+    } // findByName
+
     // Count the number of entries
     public int getNumberOfEntries() {
         return tr.size();

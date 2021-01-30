@@ -5,8 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-import java.lang.Number;
 import java.util.List;
+
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
 
@@ -41,6 +41,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JButton addR = new JButton("Add");
     private JButton lookUpByDate = new JButton("Look Up");
     private JButton findAllByDate = new JButton("Find All By Date");
+    private JButton findByName = new JButton("Find By Name");
     private JRadioButton rbInput = new JRadioButton("Input data");
     private JRadioButton rbView = new JRadioButton("View data");
 
@@ -71,6 +72,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         add(labn);
         add(name);
         name.setEditable(true);
+        add(findByName);
+        findByName.addActionListener(this);
+        findByName.setVisible(false);
         add(entryTypesSelect);
         entryTypesSelect.addActionListener(this);
         add(labd);
@@ -157,6 +161,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         if (event.getSource() == findAllByDate) {
             message = findAllByDate();
         }
+        if (event.getSource() == findByName) {
+            message = findByName();
+        }
         // Input data
         if (event.getSource() == rbInput) {
             // Visible
@@ -175,6 +182,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             // Hidden
             lookUpByDate.setVisible(false);
             findAllByDate.setVisible(false);
+            findByName.setVisible(false);
 
 
             setElementsVisibility();
@@ -182,11 +190,12 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         // View data
         if (event.getSource() == rbView) {
             // Visible
+            labn.setVisible(true);
+            name.setVisible(true);
             lookUpByDate.setVisible(true);
             findAllByDate.setVisible(true);
+            findByName.setVisible(true);
             // Hidden
-            labn.setVisible(false);
-            name.setVisible(false);
             entryTypesSelect.setVisible(false);
             labh.setVisible(false);
             hours.setVisible(false);
@@ -323,7 +332,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
 
 
     public String lookupEntry() {
-        List errors = validateLookup();
+        List errors = validateLookup("BY_DATE");
 
         if (errors.size() == 0) {
             int m = Integer.parseInt(month.getText());
@@ -337,7 +346,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
 
     public String findAllByDate() {
-        List errors = validateLookup();
+        List errors = validateLookup("BY_DATE");
 
         if (errors.size() == 0) {
             int m = Integer.parseInt(month.getText());
@@ -345,6 +354,17 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             int y = Integer.parseInt(year.getText());
             outputArea.setText("looking up records ...");
             String message = myAthletes.findAllByDate(d, m, y);
+            blankDisplay();
+            return message;
+        } else return convertListToString(errors);
+    }
+
+    public String findByName() {
+        List errors = validateLookup("BY_NAME");
+
+        if (errors.size() == 0) {
+            outputArea.setText("looking up records ...");
+            String message = myAthletes.findByName(name.getText());
             blankDisplay();
             return message;
         } else return convertListToString(errors);
@@ -407,14 +427,20 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
 
 
-    public List validateLookup() {
+    public List validateLookup(String type) {
         List<String> errors = new ArrayList<String>();
-        try {
-            Integer.parseInt(day.getText());
-            Integer.parseInt(month.getText());
-            Integer.parseInt(year.getText());
-        } catch (NumberFormatException ex) {
-            errors.add("Day, month and year must be integers!");
+        if (type.equals("BY_DATE")) {
+            try {
+                Integer.parseInt(day.getText());
+                Integer.parseInt(month.getText());
+                Integer.parseInt(year.getText());
+            } catch (NumberFormatException ex) {
+                errors.add("Day, month and year must be integers!");
+            }
+        } else if (type.equals("BY_NAME")){
+            if (name.getText().trim().equals("")){
+                errors.add("Search query cannot be empty!");
+            }
         }
         return errors;
     }
