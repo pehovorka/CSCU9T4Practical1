@@ -10,6 +10,8 @@ import java.util.List;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
 
+    private String tempos[] = {"Slow", "Moderate", "Fast"};
+
     private JTextField name = new JTextField(30);
     private JTextField day = new JTextField(2);
     private JTextField month = new JTextField(2);
@@ -18,6 +20,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JTextField mins = new JTextField(2);
     private JTextField secs = new JTextField(2);
     private JTextField dist = new JTextField(4);
+    private JTextField terr = new JTextField(6);
+    private JTextField place = new JTextField(6);
+    private JTextField repetitions = new JTextField(2);
+    private JTextField recovery = new JTextField(2);
+    private JComboBox tempo = new JComboBox(tempos);
     private JLabel labn = new JLabel(" Name:");
     private JLabel labd = new JLabel(" Day:");
     private JLabel labm = new JLabel(" Month:");
@@ -26,9 +33,20 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JLabel labmm = new JLabel(" Mins:");
     private JLabel labs = new JLabel(" Secs:");
     private JLabel labdist = new JLabel(" Distance (km):");
+    private JLabel labterr = new JLabel("Terrain: ");
+    private JLabel labtempo = new JLabel("Tempo: ");
+    private JLabel labplace = new JLabel("Place: ");
+    private JLabel labrepetitions = new JLabel("Repetitions: ");
+    private JLabel labrecovery = new JLabel("Recovery minutes between: ");
     private JButton addR = new JButton("Add");
     private JButton lookUpByDate = new JButton("Look Up");
     private JButton findAllByDate = new JButton("Find All By Date");
+    private JRadioButton rbInput = new JRadioButton("Input data");
+    private JRadioButton rbView = new JRadioButton("View data");
+
+
+    private String entryTypes[] = {"Cycling", "Swimming", "Running"};
+    private JComboBox entryTypesSelect = new JComboBox(entryTypes);
 
     private TrainingRecord myAthletes = new TrainingRecord();
 
@@ -42,9 +60,19 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     public TrainingRecordGUI() {
         super("Training Record");
         setLayout(new FlowLayout());
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(rbInput);
+        bg.add(rbView);
+        add(rbInput);
+        rbInput.addActionListener(this);
+        add(rbView);
+        rbView.addActionListener(this);
+        rbInput.setSelected(true);
         add(labn);
         add(name);
         name.setEditable(true);
+        add(entryTypesSelect);
+        entryTypesSelect.addActionListener(this);
         add(labd);
         add(day);
         day.setEditable(true);
@@ -66,17 +94,43 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         add(labdist);
         add(dist);
         dist.setEditable(true);
+
+        // Running
+        add(labrepetitions);
+        add(repetitions);
+        repetitions.setEditable(true);
+        add(labrecovery);
+        add(recovery);
+        recovery.setEditable(true);
+
+        // Cycling
+        add(labterr);
+        add(terr);
+        terr.setEditable(true);
+        add(labtempo);
+        add(tempo);
+
+        // Swimming
+        add(labplace);
+        add(place);
+        place.setEditable(true);
+
+
         add(addR);
         addR.addActionListener(this);
         add(lookUpByDate);
         lookUpByDate.addActionListener(this);
+        lookUpByDate.setVisible(false);
         add(findAllByDate);
         findAllByDate.addActionListener(this);
+        findAllByDate.setVisible(false);
         add(outputArea);
         outputArea.setEditable(false);
-        setSize(720, 200);
+        setSize(720, 300);
         setVisible(true);
         blankDisplay();
+        getElementsVisibility();
+
 
         // To save typing in new entries while testing, uncomment
         // the following lines (or add your own test cases)
@@ -103,8 +157,131 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         if (event.getSource() == findAllByDate) {
             message = findAllByDate();
         }
+        // Input data
+        if (event.getSource() == rbInput) {
+            // Visible
+            labn.setVisible(true);
+            name.setVisible(true);
+            entryTypesSelect.setVisible(true);
+            labh.setVisible(true);
+            hours.setVisible(true);
+            labmm.setVisible(true);
+            mins.setVisible(true);
+            labs.setVisible(true);
+            secs.setVisible(true);
+            labdist.setVisible(true);
+            dist.setVisible(true);
+            addR.setVisible(true);
+            // Hidden
+            lookUpByDate.setVisible(false);
+            findAllByDate.setVisible(false);
+
+
+            getElementsVisibility();
+        }
+        // View data
+        if (event.getSource() == rbView) {
+            // Visible
+            lookUpByDate.setVisible(true);
+            findAllByDate.setVisible(true);
+            // Hidden
+            labn.setVisible(false);
+            name.setVisible(false);
+            entryTypesSelect.setVisible(false);
+            labh.setVisible(false);
+            hours.setVisible(false);
+            labmm.setVisible(false);
+            mins.setVisible(false);
+            labs.setVisible(false);
+            secs.setVisible(false);
+            labdist.setVisible(false);
+            dist.setVisible(false);
+            addR.setVisible(false);
+
+
+            getElementsVisibility();
+        }
+
+        if (event.getSource() == entryTypesSelect) {
+            getElementsVisibility();
+        }
+
         outputArea.setText(message);
     } // actionPerformed
+
+    private void getElementsVisibility(){
+        if (rbInput.isSelected()) {
+            switch (entryTypesSelect.getSelectedItem().toString()) {
+                case "Cycling":
+                    // Visible
+                    labterr.setVisible(true);
+                    terr.setVisible(true);
+                    labtempo.setVisible(true);
+                    tempo.setVisible(true);
+                    // Hidden
+                    labplace.setVisible(false);
+                    place.setVisible(false);
+                    labrepetitions.setVisible(false);
+                    repetitions.setVisible(false);
+                    labrecovery.setVisible(false);
+                    recovery.setVisible(false);
+                    break;
+                case "Swimming":
+                    // Hidden
+                    labterr.setVisible(false);
+                    terr.setVisible(false);
+                    labtempo.setVisible(false);
+                    tempo.setVisible(false);
+                    labrepetitions.setVisible(false);
+                    repetitions.setVisible(false);
+                    labrecovery.setVisible(false);
+                    recovery.setVisible(false);
+                    // Visible
+                    labplace.setVisible(true);
+                    place.setVisible(true);
+                    break;
+                case "Running":
+                    // Hidden
+                    labterr.setVisible(false);
+                    terr.setVisible(false);
+                    labtempo.setVisible(false);
+                    tempo.setVisible(false);
+                    labplace.setVisible(false);
+                    place.setVisible(false);
+                    // Visible
+                    labrepetitions.setVisible(true);
+                    repetitions.setVisible(true);
+                    labrecovery.setVisible(true);
+                    recovery.setVisible(true);
+                    break;
+                default:
+                    // Hidden
+                    labterr.setVisible(false);
+                    terr.setVisible(false);
+                    labtempo.setVisible(false);
+                    tempo.setVisible(false);
+                    labplace.setVisible(false);
+                    place.setVisible(false);
+                    labrepetitions.setVisible(false);
+                    repetitions.setVisible(false);
+                    labrecovery.setVisible(false);
+                    recovery.setVisible(false);
+            }
+        }
+        else {
+            labterr.setVisible(false);
+            terr.setVisible(false);
+            labtempo.setVisible(false);
+            tempo.setVisible(false);
+            labplace.setVisible(false);
+            place.setVisible(false);
+            labrepetitions.setVisible(false);
+            repetitions.setVisible(false);
+            labrecovery.setVisible(false);
+            recovery.setVisible(false);
+        }
+
+    }
 
     public String addEntry(String what) {
         List errors = validateNewEntry();
@@ -177,18 +354,18 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             errors.add("Distance must be a number!");
         }
 
-        if (errors.size() == 0){
+        if (errors.size() == 0) {
             int d = Integer.parseInt(day.getText());
             int m = Integer.parseInt(month.getText());
             int y = Integer.parseInt(year.getText());
             String n = name.getText().trim();
-            if (myAthletes.entryAlreadyExists(d,m,y,n)){
+            if (myAthletes.entryAlreadyExists(d, m, y, n)) {
                 errors.add("This entry already exists! Change name or date.");
-            };
+            }
+            ;
         }
         return errors;
     }
-
 
 
     public List validateLookup() {
