@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
 
-    private String tempos[] = {"Slow", "Moderate", "Fast"};
+    private String tempos[] = {"slow", "moderate", "fast"};
 
     private JTextField name = new JTextField(30);
     private JTextField day = new JTextField(2);
@@ -33,11 +33,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JLabel labmm = new JLabel(" Mins:");
     private JLabel labs = new JLabel(" Secs:");
     private JLabel labdist = new JLabel(" Distance (km):");
-    private JLabel labterr = new JLabel("Terrain: ");
-    private JLabel labtempo = new JLabel("Tempo: ");
-    private JLabel labplace = new JLabel("Place: ");
-    private JLabel labrepetitions = new JLabel("Repetitions: ");
-    private JLabel labrecovery = new JLabel("Recovery minutes between: ");
+    private JLabel labterr = new JLabel("Terrain:");
+    private JLabel labtempo = new JLabel("Tempo:");
+    private JLabel labplace = new JLabel("Place:");
+    private JLabel labrepetitions = new JLabel("Repetitions:");
+    private JLabel labrecovery = new JLabel("Recovery minutes between:");
     private JButton addR = new JButton("Add");
     private JButton lookUpByDate = new JButton("Look Up");
     private JButton findAllByDate = new JButton("Find All By Date");
@@ -129,7 +129,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         setSize(720, 300);
         setVisible(true);
         blankDisplay();
-        getElementsVisibility();
+        setElementsVisibility();
 
 
         // To save typing in new entries while testing, uncomment
@@ -149,7 +149,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         String message = "";
         if (event.getSource() == addR) {
-            message = addEntry("generic");
+            message = addEntry(entryTypesSelect.getSelectedItem().toString());
         }
         if (event.getSource() == lookUpByDate) {
             message = lookupEntry();
@@ -177,7 +177,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             findAllByDate.setVisible(false);
 
 
-            getElementsVisibility();
+            setElementsVisibility();
         }
         // View data
         if (event.getSource() == rbView) {
@@ -199,17 +199,17 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             addR.setVisible(false);
 
 
-            getElementsVisibility();
+            setElementsVisibility();
         }
 
         if (event.getSource() == entryTypesSelect) {
-            getElementsVisibility();
+            setElementsVisibility();
         }
 
         outputArea.setText(message);
     } // actionPerformed
 
-    private void getElementsVisibility(){
+    private void setElementsVisibility() {
         if (rbInput.isSelected()) {
             switch (entryTypesSelect.getSelectedItem().toString()) {
                 case "Cycling":
@@ -267,8 +267,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
                     labrecovery.setVisible(false);
                     recovery.setVisible(false);
             }
-        }
-        else {
+        } else {
             labterr.setVisible(false);
             terr.setVisible(false);
             labtempo.setVisible(false);
@@ -284,7 +283,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     }
 
     public String addEntry(String what) {
-        List errors = validateNewEntry();
+        List errors = validateNewEntry(what);
 
         if (errors.size() == 0) {
             String message = "Record added\n";
@@ -297,8 +296,26 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             int h = Integer.parseInt(hours.getText());
             int mm = Integer.parseInt(mins.getText());
             int s = Integer.parseInt(secs.getText());
-            Entry e = new Entry(n, d, m, y, h, mm, s, km);
-            myAthletes.addEntry(e);
+
+            switch (what) {
+                case "Cycling":
+                    Entry cycleE = new CycleEntry(n, d, m, y, h, mm, s, km, terr.getText(), tempo.getSelectedItem().toString());
+                    myAthletes.addEntry(cycleE);
+                    break;
+                case "Swimming":
+                    Entry swimE = new SwimEntry(n, d, m, y, h, mm, s, km, place.getText());
+                    myAthletes.addEntry(swimE);
+                    break;
+                case "Running":
+                    int rep = Integer.parseInt(repetitions.getText());
+                    int rec = Integer.parseInt(recovery.getText());
+                    Entry sprintE = new SprintEntry(n, d, m, y, h, mm, s, km, rep, rec);
+                    myAthletes.addEntry(sprintE);
+                    break;
+                default:
+                    Entry e = new Entry(n, d, m, y, h, mm, s, km);
+                    myAthletes.addEntry(e);
+            }
             blankDisplay();
             return message;
         } else return convertListToString(errors);
@@ -333,7 +350,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         } else return convertListToString(errors);
     }
 
-    public List validateNewEntry() {
+    public List validateNewEntry(String what) {
         List<String> errors = new ArrayList<String>();
         if (name.getText().trim().equals("")) {
             errors.add("Name cannot be empty!");
@@ -354,6 +371,28 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             errors.add("Distance must be a number!");
         }
 
+        // Specific checks depending on entry type
+        switch (what) {
+            case "Cycling":
+                if (terr.getText().trim().equals("")) errors.add("You must specify terrain!");
+                break;
+            case "Swimming":
+                if (place.getText().trim().equals("")) errors.add("You must specify place!");
+                break;
+            case "Running":
+                try {
+                    Integer.parseInt(repetitions.getText());
+                    Integer.parseInt(recovery.getText());
+                } catch (NumberFormatException ex) {
+                    errors.add("Repetitions and Recovery Minutes must be integers!");
+                }
+                break;
+            default:
+
+        }
+
+
+        // Prevent duplicate entries
         if (errors.size() == 0) {
             int d = Integer.parseInt(day.getText());
             int m = Integer.parseInt(month.getText());
@@ -398,6 +437,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         mins.setText("");
         secs.setText("");
         dist.setText("");
+        repetitions.setText("");
+        recovery.setText("");
+        terr.setText("");
+        place.setText("");
 
     }// blankDisplay
 
